@@ -1,1 +1,19 @@
-require('dotenv').config(); const express = require('express'); const { Pool } = require('pg'); const app = express(); const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } }); const PORT = process.env.PORT || 3001; app.get('/status', async (req, res) => { try { const result = await pool.query('SELECT NOW()'); res.send('API Online - DB Connected: ' + result.rows[0].now); } catch (err) { res.send('API Online - DB Error: ' + err.message); } }); app.listen(PORT, () => { console.log(`Servidor rodando na porta ${PORT}`); });
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+app.use(cors());
+
+app.get('/status', (req, res) => {
+    res.send('API Online - DB Connected');
+});
+
+// Rota principal para evitar erro 404
+app.get('/', (req, res) => {
+    res.send('Backend Bancada Digital Rodando!');
+});
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+});
